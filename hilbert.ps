@@ -1,0 +1,49 @@
+%!PS
+% Hilbert curve in Postscript
+% 
+% During execution, stack looks like:
+% [parent CTX] 
+
+/inch {72 mul} def
+% xt yt -> -
+/h0 {
+    hilbert
+} def
+/h2 { 
+    -1 inch -1 inch translate
+    -1 1 scale
+    90 rotate
+    dup h0
+    -90 rotate
+    -1 1 scale
+    0 2 inch translate dup h0
+    2 inch 0 translate dup h0
+    0 -2 inch translate
+    -1 1 scale
+    -90 rotate
+    dup h0
+    90 rotate
+    -1 1 scale
+    -1 inch 1 inch translate
+} def
+
+% parameters: depth remaining
+/hilbert {
+    .5 .5 scale
+    1 sub dup 0 eq
+    {0 0 lineto} {
+        h2
+    }
+    ifelse
+    pop
+    2 2 scale
+} def
+
+
+
+8.5 inch 2 div 11 inch 2 div translate
+
+0 0 moveto 
+7 hilbert
+stroke
+

@@ -1,0 +1,107 @@
+%!PS
+
+% L-systems for Postscript
+% This is a quick toolkit for implementing L-systems in python.
+% - The alphabet is composed of Postscript names.
+% - The state of the system is an array of names.
+% - The production rules are defined as a dictionary that maps each name in
+% the alphabet to an array of names. Every element of the alphabet *must*
+% have an associated production rule, even if it's just the identity.
+%
+% Example:
+% << /X [/X /Y /X] /Y [/Y] >> begin   %define and use the ruleset
+%   [/X] 5 lsystem                    %5 iterations on start string /X
+% end
+
+% Perform a single iteration on an Lindenmayer system.
+% _array_ -> _array_
+/lsys-pass {
+    mark exch { load aload pop } forall ]
+} def
+
+% Perform a specified number of iterations on a Lindenmayer system.
+% _array_ _int_ -> _array_
+/lsystem {
+    {lsys-pass} repeat
+} def
+
+% Sample rulesets
+/algae-rules << /A [/A /B] /B [/A] >> def
+/koch-rules << 
+    /F [/F /LT /F /RT /F /RT /F /LT /F]
+    /LT [/LT]
+    /RT [/RT]
+>> def
+
+% Turtle graphics for Postscript
+% This is a simple implementation of turtle graphics in postscript.
+% You must moveto a location to initialize the turtle. Stroking the
+% path invalidates the location as you'd expect in postscript.
+/tg-theta 0 def     % current angle
+/tg-pen true def    % pen up/down state
+
+% Move turtle forward
+% _real_ -> -
+/tg-fd {
+    dup tg-theta sin mul exch tg-theta cos mul
+    currentpoint 4 1 roll add 3 1 roll add 
+    tg-pen {lineto} {moveto} ifelse
+} def
+% move turtle backward
+% _real_ -> -
+/tg-bk { neg tg-fd } def
+
+% turn turtle left in degrees
+% _real_ -> -
+/tg-lt { /tg-theta tg-theta 3 -1 roll add def } def
+% turn turtle right in degrees
+% _real_ -> -
+/tg-rt { neg tg-lt } def
+
+% pen up
+% - -> -
+/tg-pu { /tg-pen false def } def
+% pen down
+% - -> -
+/tg-pd { /tg-pen true def } def
+
+% push turtle graphics state
+/tg-push { tg-theta tg-pen currentpoint } def
+% restore turtle graphics state
+/tg-pop { moveto /tg-pen exch def /tg-theta exch def } def
+
+
+% turtle graphics rendering for koch l-system
+/koch-render << /F { 1.25 tg-fd } /LT { 90 tg-lt } /RT { 90 tg-rt } >> def
+
+
+% "plant" l-system rules
+/plant-rules <<
+    /X [/F /LT /PU /PU /X /PO /RT /X /PO /RT /F /PU /RT /F /X /PO /LT /X]
+    /F [/F /F] 
+    /PU [/PU] /PO [/PO] /LT [/LT] /RT [/RT] 
+>> def
+
+% "plant" l-system turtle graphics renderer
+/plant-render <<
+    /X {}
+    /F { 4 tg-fd }
+    /LT { 25 tg-lt }
+    /RT { 25 tg-rt }
+    /PU { tg-push }
+    /PO { tg-pop }
+>> def
+
+% Example: plant lsystem
+plant-rules begin
+    [/X] 6 lsystem
+end
+
+% Example: rendering plant lsystem
+/inch { 72 mul } def
+1 inch 1.5 inch moveto
+65 tg-lt
+plant-render begin
+    { load exec } forall
+end
+stroke

@@ -1,0 +1,25 @@
+
+% reverse a string
+/sreverse {
+    dup /l exch length def
+    /s l string def
+    { s l 1 sub dup /l exch def 3 -1 roll put } forall
+    s
+} def
+
+% reverse an array
+%  _array_ -> _array_
+/reverse {
+    aload
+    /l length def
+    1 1 l { -1 roll } for
+    l array astore
+} def
+
+% Convert string to list of names
+% _string_ -> _name_ _name..._
+/str2names {
+    { 1 string dup 0 4 -1 roll put cvn } forall 
+} def
+
+
