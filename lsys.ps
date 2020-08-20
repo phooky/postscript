@@ -74,34 +74,6 @@
 % turtle graphics rendering for koch l-system
 /koch-render << /F { 1.25 tg-fd } /LT { 90 tg-lt } /RT { 90 tg-rt } >> def
 
+% For other examples, see:
+% plant-ex.ps
 
-% "plant" l-system rules
-/plant-rules <<
-    /X [/F /LT /PU /PU /X /PO /RT /X /PO /RT /F /PU /RT /F /X /PO /LT /X]
-    /F [/F /F] 
-    /PU [/PU] /PO [/PO] /LT [/LT] /RT [/RT] 
->> def
-
-% "plant" l-system turtle graphics renderer
-/plant-render <<
-    /X {}
-    /F { 4 tg-fd }
-    /LT { 25 tg-lt }
-    /RT { 25 tg-rt }
-    /PU { tg-push }
-    /PO { tg-pop }
->> def
-
-% Example: plant lsystem
-plant-rules begin
-    [/X] 6 lsystem
-end
-
-% Example: rendering plant lsystem
-/inch { 72 mul } def
-1 inch 1.5 inch moveto
-65 tg-lt
-plant-render begin
-    { load exec } forall
-end
-stroke

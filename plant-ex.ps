@@ -1,0 +1,36 @@
+%!PS
+
+% Draw a pretty l-system plant.
+%
+% Requires lsys library; run like this:
+% gs lsys.ps plant-ex.ps
+
+% "plant" l-system rules
+/plant-rules <<
+    /X [/F /LT /PU /PU /X /PO /RT /X /PO /RT /F /PU /RT /F /X /PO /LT /X]
+    /F [/F /F] 
+    /PU [/PU] /PO [/PO] /LT [/LT] /RT [/RT] 
+>> def
+
+% "plant" l-system turtle graphics renderer
+/plant-render <<
+    /X {}
+    /F { 4 tg-fd }
+    /LT { 25 tg-lt }
+    /RT { 25 tg-rt }
+    /PU { tg-push }
+    /PO { tg-pop }
+>> def
+
+plant-rules begin
+     [/X] 6 lsystem
+end
+
+/inch { 72 mul } def
+1 inch 1.5 inch moveto
+65 tg-lt
+plant-render begin
+    { load exec } forall
+end
+stroke
+
