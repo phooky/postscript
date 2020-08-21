@@ -1,0 +1,31 @@
+%!PS
+
+/moore-rules <<
+    /L [/LT /R /F /RT /L /F /L /RT /F /R /LT]
+    /R [/RT /L /F /LT /R /F /R /LT /F /L /RT]
+    /F [/F]
+    /LT [/LT]
+    /RT [/RT]
+>> def
+
+/step 4.5 def
+/angle 90 def
+
+/moore-render <<
+    /L {}
+    /R {}
+    /F { step tg-fd }
+    /LT { angle tg-lt }
+    /RT { angle tg-rt }
+>> def
+
+moore-rules begin
+    [/L /F /L /RT /F /RT /L /F /L] 6 lsystem
+end
+
+/inch {72 mul} def
+0.5 inch 5.5 inch moveto
+moore-render begin
+    { load exec } forall
+end
+stroke
